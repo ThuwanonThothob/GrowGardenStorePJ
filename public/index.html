@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>เข้าสู่ระบบ | GrowGarden Store</title>
+  <link rel="stylesheet" href="CSS/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="login-bg">
+
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="logo-circle">
+          <i class="fas fa-seedling"></i>
+        </div>
+        <h1 id="formTitle">ยินดีต้อนรับกลับ</h1>
+        <p id="formDesc">เข้าสู่ระบบ GrowGarden Store</p>
+      </div>
+
+      <form id="authForm" class="login-form">
+
+        <div class="input-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="email" placeholder="อีเมล (gmail)" required />
+        </div>
+        <div class="input-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="รหัสผ่าน" required />
+        </div>
+
+        <div id="registerFields" style="display: none; flex-direction: column; gap: 1rem;">
+          <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="firstName" placeholder="ชื่อ" required />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" id="lastName" placeholder="นามสกุล" required />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-venus-mars"></i>
+            <select id="gender" required>
+              <option value="" disabled selected>เพศ</option>
+              <option value="ชาย">ชาย</option>
+              <option value="หญิง">หญิง</option>
+              <option value="อื่นๆ">อื่นๆ</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <i class="fas fa-birthday-cake"></i>
+            <input type="number" id="age" placeholder="อายุ (ปี)" min="1" max="120" required />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-map-marker-alt"></i>
+            <textarea id="address" placeholder="ที่อยู่จัดส่ง" required></textarea>
+          </div>
+          <div class="input-group">
+            <i class="fas fa-city"></i>
+            <select id="province" required>
+              <option value="" disabled selected>เลือกจังหวัด</option>
+              <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
+              <option value="กระบี่">กระบี่</option>
+              <option value="กาญจนบุรี">กาญจนบุรี</option>
+              <option value="กาฬสินธุ์">กาฬสินธุ์</option>
+              <option value="กำแพงเพชร">กำแพงเพชร</option>
+              <option value="ขอนแก่น">ขอนแก่น</option>
+              <option value="จันทบุรี">จันทบุรี</option>
+              <option value="ฉะเชิงเทรา">ฉะเชิงเทรา</option>
+              <option value="ชลบุรี">ชลบุรี</option>
+              <option value="ชัยนาท">ชัยนาท</option>
+              <option value="ชัยภูมิ">ชัยภูมิ</option>
+              <option value="ชุมพร">ชุมพร</option>
+              <option value="เชียงราย">เชียงราย</option>
+              <option value="เชียงใหม่">เชียงใหม่</option>
+              <option value="ตรัง">ตรัง</option>
+              <option value="ตราด">ตราด</option>
+              <option value="ตาก">ตาก</option>
+              <option value="นครนายก">นครนายก</option>
+              <option value="นครปฐม">นครปฐม</option>
+              <option value="นครพนม">นครพนม</option>
+              <option value="นครราชสีมา">นครราชสีมา</option>
+              <option value="นครศรีธรรมราช">นครศรีธรรมราช</option>
+              <option value="นครสวรรค์">นครสวรรค์</option>
+              <option value="นนทบุรี">นนทบุรี</option>
+              <option value="นราธิวาส">นราธิวาส</option>
+              <option value="น่าน">น่าน</option>
+              <option value="บึงกาฬ">บึงกาฬ</option>
+              <option value="บุรีรัมย์">บุรีรัมย์</option>
+              <option value="ปทุมธานี">ปทุมธานี</option>
+              <option value="ประจวบคีรีขันธ์">ประจวบคีรีขันธ์</option>
+              <option value="ปราจีนบุรี">ปราจีนบุรี</option>
+              <option value="ปัตตานี">ปัตตานี</option>
+              <option value="พระนครศรีอยุธยา">พระนครศรีอยุธยา</option>
+              <option value="พังงา">พังงา</option>
+              <option value="พัทลุง">พัทลุง</option>
+              <option value="พิจิตร">พิจิตร</option>
+              <option value="พิษณุโลก">พิษณุโลก</option>
+              <option value="เพชรบุรี">เพชรบุรี</option>
+              <option value="เพชรบูรณ์">เพชรบูรณ์</option>
+              <option value="แพร่">แพร่</option>
+              <option value="ภูเก็ต">ภูเก็ต</option>
+              <option value="มหาสารคาม">มหาสารคาม</option>
+              <option value="มุกดาหาร">มุกดาหาร</option>
+              <option value="แม่ฮ่องสอน">แม่ฮ่องสอน</option>
+              <option value="ยโสธร">ยโสธร</option>
+              <option value="ยะลา">ยะลา</option>
+              <option value="ร้อยเอ็ด">ร้อยเอ็ด</option>
+              <option value="ระนอง">ระนอง</option>
+              <option value="ระยอง">ระยอง</option>
+              <option value="ราชบุรี">ราชบุรี</option>
+              <option value="ลพบุรี">ลพบุรี</option>
+              <option value="ลำปาง">ลำปาง</option>
+              <option value="ลำพูน">ลำพูน</option>
+              <option value="เลย">เลย</option>
+              <option value="ศรีสะเกษ">ศรีสะเกษ</option>
+              <option value="สกลนคร">สกลนคร</option>
+              <option value="สงขลา">สงขลา</option>
+              <option value="สตูล">สตูล</option>
+              <option value="สมุทรปราการ">สมุทรปราการ</option>
+              <option value="สมุทรสงคราม">สมุทรสงคราม</option>
+              <option value="สมุทรสาคร">สมุทรสาคร</option>
+              <option value="สระแก้ว">สระแก้ว</option>
+              <option value="สระบุรี">สระบุรี</option>
+              <option value="สิงห์บุรี">สิงห์บุรี</option>
+              <option value="สุโขทัย">สุโขทัย</option>
+              <option value="สุพรรณบุรี">สุพรรณบุรี</option>
+              <option value="สุราษฎร์ธานี">สุราษฎร์ธานี</option>
+              <option value="สุรินทร์">สุรินทร์</option>
+              <option value="หนองคาย">หนองคาย</option>
+              <option value="หนองบัวลำภู">หนองบัวลำภู</option>
+              <option value="อ่างทอง">อ่างทอง</option>
+              <option value="อุดรธานี">อุดรธานี</option>
+              <option value="อุทัยธานี">อุทัยธานี</option>
+              <option value="อุบลราชสีนา">อุบลราชสีนา</option>
+              <option value="อำนาจเจริญ">อำนาจเจริญ</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn" id="submitBtn">
+          <i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ
+        </button>
+      </form>
+
+      <div class="login-footer" id="toggleText">
+        <p style="margin-top: 1rem;">
+          ยังไม่มีบัญชี? 
+          <a href="#" id="toggleLink" style="color:#2e7d32; text-decoration:underline;">สมัครสมาชิกที่นี่</a>
+        </p>
+      </div>
+
+      <div class="login-footer">
+        <p style="margin-top: 1rem;">© 2025 GrowGarden Store. สงวนลิขสิทธิ์ทั้งหมด.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="JS/script.js"></script>
+</body>
+</html>

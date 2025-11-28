@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ตะกร้า | GrowGarden Store</title>
+  <link rel="stylesheet" href="CSS/style.css" />
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">GrowGarden</div>
+      <ul>
+        <li><a href="home.html">STORE</a></li>
+        <li><a href="shop.html">SHOP</a></li>
+        <li><a href="checkout.html" class="active">CART (<span id="cartCount">0</span>)</a></li>
+        <li><a href="orders.html">คำสั่งซื้อ</a></li>
+        <li><a href="#" id="loginLink">LOGOUT</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="checkout-page">
+    <div style="margin: 1rem 5%; max-width: 800px;">
+      <a href="shop.html" style="color: #2e7d32; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 5px;">
+        <i class="fas fa-arrow-left"></i> กลับไปเลือกซื้อต่อ
+      </a>
+    </div>
+
+    <h2 style="margin: 0 5%; max-width: 800px;">ตะกร้าสินค้าของคุณ</h2>
+
+    <div id="cartItems" style="margin: 1rem 5%; max-width: 800px;"></div>
+
+    <div id="totalSummary" style="margin: 1.5rem 5%; max-width: 800px; padding: 1.5rem; background: #f0f8f0; border-radius: 16px; font-weight: 500; display: none;"></div>
+
+    <div class="summary" style="margin: 1rem 5%; max-width: 800px;">
+      <h3>ข้อมูลการจัดส่ง</h3>
+      <div id="userInfo" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8fff8; border-radius: 12px;"></div>
+
+      <button id="confirmOrder" style="width: 100%; padding: 16px; border: none; border-radius: 12px; background: linear-gradient(135deg, #2e7d32, #1b5e20); color: white; font-weight: 600; font-size: 1.1rem;">
+        ยืนยันคำสั่งซื้อ
+      </button>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 GrowGarden Store. สงวนลิขสิทธิ์ทั้งหมด.</p>
+  </footer>
+
+  <script src="JS/script.js"></script>
+</body>
+</html>
