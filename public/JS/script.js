@@ -2,9 +2,6 @@
 //          SCRIPT.JS - (อัปเดต v2 - แก้ไขระบบ Order)
 // ===============================================
 
-// === เพิ่มบรรทัดนี้เพื่อแก้ Failed to fetch ===
-const API_BASE = 'https://unhopeful-malena-pausingly.ngrok-free.dev';  // แทนที่ด้วยลิงก์ ngrok backend ของคุณ (จาก ngrok http 3001)
-
 // === ฐานข้อมูลสินค้า ===
 const products = [
   { id: 1, name: "Sunflower", price: 300, img: "images/Sunflower.png", gallery: ["images/Sunflower.png","images/Sunflower.png","images/Sunflower.png"], desc: "หอมสดชื่น ช่วยผ่อนคลาย", benefit: "ลดความเครียด ช่วยให้นอนหลับดี ไล่แมลง", care: "รดน้ำ 2-3 วัน/ครั้ง ชอบแดดอ่อน ระบายน้ำดี", season: "ปลูกได้ตลอดปี", location: "ในร่ม หน้าต่าง ระเบียง", category: "ในร่ม" },
@@ -74,7 +71,7 @@ if (document.getElementById('productsGrid')) {
   function renderProducts(filtered = products) {
     grid.innerHTML = '';
     if (filtered.length === 0) {
-      grid.innerHTML = '<p style="text-align:center; color:#ff0000ff; grid-column:1/-1; padding:3rem;">ไม่พบสินค้า</p>';
+      grid.innerHTML = '<p style="text-align:center; color:#999; grid-column:1/-1; padding:3rem;">ไม่พบสินค้า</p>';
       return;
     }
     filtered.forEach(p => {
@@ -175,7 +172,7 @@ if (document.getElementById('cartItems')) {
   function renderCart() {
     itemsDiv.innerHTML = '';
     if (cart.length === 0) {
-      itemsDiv.innerHTML = '<p style="text-align:center: center; color:#ff0000ff; padding:2rem;">ตะกร้าว่างเปล่า</p>';
+      itemsDiv.innerHTML = '<p style="text-align:center: center; color:#999; padding:2rem;">ตะกร้าว่างเปล่า</p>';
       totalSummary.style.display = 'none';
       return;
     }
@@ -196,8 +193,8 @@ if (document.getElementById('cartItems')) {
           <span class="qty-number">${item.qty}</span>
           <button class="qty-btn" onclick="incQty(${index})">+</button>
         </div>
-        <span style="font-weight: 600; color: #ff0000ff; min-width: 80px; text-align: right;">${itemTotal} บาท</span>
-        <button onclick="removeFromCart(${index})" style="background:#ff0000ff; color:white; border:none; padding:6px 12px; border-radius:8px; font-size:0.9rem; margin-left:10px;">ลบ</button>
+        <span style="font-weight: 600; color: #000000; min-width: 80px; text-align: right;">${itemTotal} บาท</span>
+        <button onclick="removeFromCart(${index})" style="background:#e53935; color:white; border:none; padding:6px 12px; border-radius:8px; font-size:0.9rem; margin-left:10px;">ลบ</button>
       `;
       itemsDiv.appendChild(div);
     });
@@ -208,19 +205,19 @@ if (document.getElementById('cartItems')) {
 
     totalSummary.style.display = 'block';
     totalSummary.innerHTML = `
-      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #000000ff;">
         <span>ราคาสินค้า:</span>
         <span>${total.toFixed(2)} บาท</span>
       </div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #000000ff;">
         <span>ค่าจัดส่ง:</span>
         <span>${shipping} บาท</span>
       </div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 12px; color: #000000ff;">
         <span>ภาษี 7%:</span>
         <span>${tax.toFixed(2)} บาท</span>
       </div>
-      <div style="display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 700; color: #ff0000ff;">
+      <div style="display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 700; color: #000000ff;">
         <span>ยอดรวมทั้งสิ้น:</span>
         <span>${grandTotal.toFixed(2)} บาท</span>
       </div>
@@ -252,7 +249,7 @@ if (document.getElementById('cartItems')) {
     const tax = total * 0.07;
     const grandTotal = total + shipping + tax;
 
-    const res = await fetch(`${API_BASE}/api/orders`, {
+    const res = await fetch('http://localhost:3001/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -314,7 +311,7 @@ if (document.getElementById('orderSummary')) {
   if (!lastOrderId || !user.id) {
     document.getElementById('orderSummary').innerHTML = '<p>ไม่พบข้อมูลคำสั่งซื้อล่าสุด</p>';
   } else {
-    fetch(`${API_BASE}/api/orders/${user.id}`)
+    fetch(`http://localhost:3001/api/orders/${user.id}`)
       .then(res => res.json())
       .then(orders => {
         console.log('fetched orders:', orders);
@@ -335,7 +332,7 @@ if (document.getElementById('orderSummary')) {
           <p><strong>ชื่อลูกค้า:</strong> ${user.firstName || ''} ${user.lastName || ''}</p>
           <p><strong>รวมทั้งหมด:</strong> ${order.total} บาท</p>
           <p><strong>สั่งซื้อเมื่อ:</strong> ${new Date(order.created_at).toLocaleString()}</p>
-          <ul style="margin-top:1rem; text-align:left;">${itemsHTML}</ul>
+          <ul style="margin-top:1rem; text-align:left;">${itemsHTML}</ul> 
         `;
 
         sessionStorage.removeItem('lastOrderId');
@@ -357,7 +354,7 @@ if (document.getElementById('ordersList')) {
   const user = JSON.parse(localStorage.getItem('currentUser'));
 
   if (!user || !user.email) {
-    ordersList.innerHTML = `<p style="text-align:center; color:#ff0000ff;">กรุณาล็อกอินเพื่อดูประวัติคำสั่งซื้อ</p>`;
+    ordersList.innerHTML = `<p style="text-align:center; color:#999;">กรุณาล็อกอินเพื่อดูประวัติคำสั่งซื้อ</p>`;
   } else {
     // [แก้ไข] ดึงคำสั่งซื้อจาก key ที่ผูกกับอีเมล
     const orderKey = 'orders_' + user.email;
@@ -365,10 +362,10 @@ if (document.getElementById('ordersList')) {
 
     if (userOrders.length === 0) {
       ordersList.innerHTML = `
-        <div style="text-align:center; padding: 3rem; color: #ff0000ff;">
-          <i class="fas fa-receipt" style="font-size: 3rem; margin-bottom: 1rem; color: #ff0000ff;"></i>
+        <div style="text-align:center; padding: 3rem; color: #999;">
+          <i class="fas fa-receipt" style="font-size: 3rem; margin-bottom: 1rem; color: #ccc;"></i>
           <p style="font-size: 1.2rem;">ยังไม่มีคำสั่งซื้อ</p>
-          <a href="shop.html" style="color: #ff0000ff; text-decoration: underline;">ไปช้อปปิ้งเลย!</a>
+          <a href="shop.html" style="color: #2e7d32; text-decoration: underline;">ไปช้อปปิ้งเลย!</a>
         </div>
       `;
     } else {
@@ -382,8 +379,8 @@ if (document.getElementById('ordersList')) {
               <small>${order.date}</small>
             </div>
             <div style="text-align: right;">
-              <div style="font-weight: 600; color: #ff0000ff;">${order.total.toFixed(2)} บาท</div>
-              <button onclick="openOrderModal('${order.id}')" style="margin-top: 0.5rem; background: #ff0000ff; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.9rem;">
+              <div style="font-weight: 600; color: #000000ff;">${order.total.toFixed(2)} บาท</div>
+              <button onclick="openOrderModal('${order.id}')" style="margin-top: 0.5rem; background: #2e7d32; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.9rem;">
                 ดูรายละเอียด
               </button>
             </div>
@@ -508,7 +505,7 @@ if (authForm) {
       // === ล็อกอินผ่าน API ===
       try {
         // เรียก API users ทั้งหมด (ในอนาคตสามารถทำ login API แยกได้)
-        const res = await fetch(`${API_BASE}/api/users`);
+        const res = await fetch('http://localhost:3001/api/users');
         const users = await res.json();
 
         const email = document.getElementById('email').value.trim();
@@ -563,7 +560,7 @@ if (authForm) {
 
 
       try {
-        const res = await fetch(`${API_BASE}/api/users`, {
+        const res = await fetch('http://localhost:3001/api/users', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newUser)
@@ -639,8 +636,8 @@ if (document.getElementById('userInfo')) {
   const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
   if (user.email) {
     document.getElementById('userInfo').innerHTML = `
-      <div style="background:#f0f8f0; padding:1rem; border-radius:12px; margin-bottom:1rem; border:1px solid #a8e6a8;">
-        <p style="margin:0.4rem 0; font-weight:600; color:#2e7d32;">ข้อมูลการจัดส่ง</p>
+      <div style="background:#00000; padding:1rem; border-radius:12px; margin-bottom:1rem; border:1px solid #a8e6a8;">
+        <p style="margin:0.4rem 0; font-weight:600; color:#000000;">ข้อมูลการจัดส่ง</p>
         <p style="margin:0.3rem 0;"><strong>ชื่อ:</strong> ${user.firstName} ${user.lastName}</p>
         <p style="margin:0.3rem 0;"><strong>อีเมล:</strong> ${user.email}</p>
         <p style="margin:0.3rem 0;"><strong>ที่อยู่:</strong> ${user.address}, ${user.province}</p>

@@ -1,4 +1,4 @@
-//== SERVER.js (เวอร์ชันแก้แล้ว – รันได้ 100% บน Node.js v24) ==
+//==SERVER.js==
 const express = require('express');
 const mysql = require('mysql2/promise');
 const cors = require('cors');
@@ -6,18 +6,8 @@ const cors = require('cors');
 const app = express();
 const PORT = 3001;
 
-// วิธีที่ 1 (แนะนำที่สุด): ใช้แบบนี้แทน app.options('*', cors())
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  // ใส่ OPTIONS ตรงนี้เลย
-  allowedHeaders: ['Content-Type']
-}));
-
+app.use(cors());
 app.use(express.json());
-
-// ลบบรรทัดนี้ออกไปเลย (ตัวการที่ทำให้ error ใน Node.js ใหม่)
- // app.options('*', cors());   ← ลบอันนี้ออกไป!
 
 let db;
 
@@ -32,103 +22,120 @@ let db;
       connectionLimit: 10,
       queueLimit: 0
     });
-    console.log('เชื่อมต่อ MySQL สำเร็จ');
+    console.log('เชื่อมต่อ MySQL สำเร็จ ✅');
 
-    // ==================== Users API ====================
-    app.post('/api/users', async (req, res) => {
-      try {
-        const { firstName, lastName, gender, age, address, province, email, password } = req.body;
+    // =========================
+    // Users API
+    // =========================
+    // POST สมัครสมาชิก
+app.post('/api/users', async (req, res) => {
+  console.log('ข้อมูลที่ server รับ:', req.body);
+  try {
+    const { firstName, lastName, gender, age, address, province, email, password } = req.body;
 
-        const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
-        if (existing.length > 0) return res.status(400).json({ error: 'อีเมลนี้ถูกใช้แล้ว' });
+    // ตรวจสอบ email ซ้ำ
+    const [existing] = await db.query(`SELECT * FROM users WHERE email = ?`, [email]);
+    if (existing.length > 0) {
+      return res.status(400).json({ error: 'อีเมลนี้ถูกใช้แล้ว' });
+    }
 
-        const [result] = await db.query(
-          `INSERT INTO users (first_name, last_name, gender, age, address, province, email, password)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-          [firstName, lastName, gender, age, address, province, email, password]
-        );
+    const [result] = await db.query(
+      `INSERT INTO users (first_name, last_name, gender, age, address, province, email, password)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [firstName, lastName, gender, age, address, province, email, password]
+    );
 
-        res.json({ id: result.insertId });
-      } catch (err) {
-        console.error('Error POST /api/users:', err);
-        res.status(500).json({ error: err.message });
-      }
-    });
+    res.json({ id: result.insertId });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
 
+  }
+});
+
+
+    // GET users ทั้งหมด (สำหรับ debug/admin)
     app.get('/api/users', async (req, res) => {
       try {
-        const [rows] = await db.query('SELECT * FROM users');
+        const [rows] = await db.query(`SELECT * FROM users`);
         res.json(rows);
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
 
-    // ==================== Orders API ====================
+    // =========================
+    // Orders API
+    // =========================
+    // POST สั่งซื้อ
     app.post('/api/orders', async (req, res) => {
       try {
         const { userId, total, items } = req.body;
         const [result] = await db.query(
-          `INSERT INTO orders (user_id, total, items, created_at)
-           VALUES (?, ?, ?, CONVERT_TZ(NOW(), '+00:00', '+07:00'))`,
+          `INSERT INTO orders (user_id, total, items, created_at) VALUES (?, ?, ?, CONVERT_TZ(NOW(), '+00:00', '+07:00'))`,
           [userId, total, JSON.stringify(items)]
         );
         res.json({ id: result.insertId });
       } catch (err) {
-        console.error('Error POST /api/orders:', err);
         res.status(500).json({ error: err.message });
       }
     });
 
+
+    // GET orders ของ user
     app.get('/api/orders/:userId', async (req, res) => {
       try {
+        const userId = req.params.userId;
         const [rows] = await db.query(
-          'SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC',
-          [req.params.userId]
+          `SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC`,
+          [userId]
         );
-        const orders = rows.map(r => ({
-          ...r,
-          items: JSON.parse(r.items),
-          total: parseFloat(r.total)
-        }));
+        const orders = rows.map(r => ({ ...r, items: JSON.parse(r.items) }));
         res.json(orders);
       } catch (err) {
         res.status(500).json({ error: err.message });
       }
     });
 
+    // GET orders ทั้งหมด (Admin)
     app.get('/api/all-orders', async (req, res) => {
-      try {
-        const [rows] = await db.query(`
-          SELECT o.*, u.first_name, u.last_name, u.email, u.address, u.province
-          FROM orders o
-          JOIN users u ON o.user_id = u.id
-          ORDER BY o.created_at DESC
-        `);
+  try {
+    const [rows] = await db.query(`
+      SELECT o.id, o.user_id, o.total, o.items, o.created_at,
+            u.first_name, u.last_name, u.email, u.address, u.province
+      FROM orders o
+      JOIN users u ON o.user_id = u.id
+      ORDER BY o.created_at DESC
+    `);
 
-        const orders = rows.map(r => ({
-          ...r,
-          items: JSON.parse(r.items),
-          total: parseFloat(r.total)
-        }));
+    //console.log(rows); // <-- เช็คว่ามี email มาด้วยไหม
 
-        res.json(orders);
-      } catch (err) {
-        console.error('Error GET /api/all-orders:', err);
-        res.status(500).json({ error: err.message });
-      }
-    });
+    const orders = rows.map(r => ({
+      id: r.id,
+      user_id: r.user_id,
+      last_name: r.last_name,
+      first_name: r.first_name,
+      email: r.email,  // <-- ต้องมี
+      address: r.address,
+      province: r.province,
+      total: r.total,
+      created_at: r.created_at,
+      items: JSON.parse(r.items)
+    }));
 
-    app.get('/', (req, res) => {
-      res.send('<h1>GrowGarden Backend พร้อมแล้ว!</h1>');
-    });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
-    app.listen(PORT, '0.0.0.0', () => {
-      console.log(`Server รันที่ http://localhost:${PORT}`);
-      console.log('ต่อไปรัน: ngrok http 3001');
-    });
+
+
+    // =========================
+    // Start server
+    // =========================
+    app.listen(PORT, () => console.log(`Server รันที่ http://localhost:${PORT}`));
 
   } catch (err) {
-    console.error('เชื่อมต่อ MySQL ไม่สำเร็จ:', err);
+    console.error("เชื่อมต่อ MySQL ไม่สำเร็จ:", err);
   }
 })();
